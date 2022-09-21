@@ -2,13 +2,12 @@ const sleep = (milliseconds) => {return new Promise(resolve => setTimeout(resolv
 const fetch = require('node-fetch');
 const WebSocket = require('ws');
 
-let token = "ODkzMjMxMzUwNzYzNjI2NTc3.Gya9Eg.DA8cHFsRFkKjeepPHEJ-S3o9QdVKUCFcxP4JKA";   // Dicord BOT token from https://discord.dev/
+let token = "OTQ1MDc0Mzk1NzA0MDc0Mjcx.G178to.90hUXve_KIzkVPj5RJqWIvkyRzSa3AxcSxr4gA";   // Dicord BOT token from https://discord.dev/
 let intents = "32767"; // https://discord-intents-calculator.vercel.app/ and https://discord.com/developers/docs/topics/gateway#gateway-intents
 
 function recursion()
 {
     let socket = new WebSocket("wss://gateway.discord.gg/?v=6&encording=json");
-
     socket.onready = function(event){
         console.log("WS Ready!")
     }
@@ -17,11 +16,11 @@ function recursion()
         console.log("Recursion!")
         recursion()
     }
-
+    
     socket.onmessage = async function(event) { //https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events
         let ctx = JSON.parse(event.data);
 
-        if(JSON.stringify(ctx).includes('heartbeat_interval')){
+        if(ctx?.d?.heartbeat_interval!==undefined){
             var interval = JSON.parse(event.data)['d']['heartbeat_interval'];
             hb(socket, interval);
             socket.send(JSON.stringify({ "op": 2, "d": { "intents": intents, "token": token, "properties": { "os": "BOT"}}}));
